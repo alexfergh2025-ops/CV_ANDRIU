@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Juan Andres Goya Acosta — CV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg-dark: #0a0f1d;
+      --bg-card: #151e2e;
+      --text-primary: #e0f0ff;
+      --text-secondary: #8ab4f8;
+      --accent: #4fc3f7;
+      --accent-hover: #29b6f6;
+      --success: #69f0ae;
+    }
+
+    body {
+      font-family: 'Fira Code', monospace;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated code background */
+    canvas#code-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+    }
+
+    .module {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .module.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .module-content {
+      max-width: 1000px;
+      width: 100%;
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 48px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(79, 195, 247, 0.2);
+      transform: translateZ(30px);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateZ(30px) translateY(0); }
+      50% { transform: translateZ(30px) translateY(-15px); }
+    }
+
+    .module-title {
+      font-size: 2.6rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      position: relative;
+      animation: slideInLeft 1s ease forwards;
+    }
+
+    .module-title::after {
+      content: "";
+      display: block;
+      width: 90px;
+      height: 4px;
+      background: var(--accent);
+      margin-top: 10px;
+      animation: growLine 1.2s ease forwards;
+    }
+
+    .profile-img {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      margin: 0 auto 36px;
+      filter: grayscale(15%);
+      transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .profile-img:hover {
+      filter: grayscale(0);
+      transform: scale(1.15) rotate(8deg);
+      box-shadow: 0 0 40px rgba(79, 195, 247, 0.4);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin: 2rem 0;
+    }
+
+    .info-card {
+      background: rgba(21, 30, 46, 0.7);
+      padding: 1.6rem;
+      border-radius: 14px;
+      border-left: 4px solid var(--accent);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(8px);
+    }
+
+    .info-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      border-left-color: var(--accent-hover);
+    }
+
+    .info-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      margin: 1.2rem 0;
+    }
+
+    .skill-tag {
+      background: rgba(79, 195, 247, 0.1);
+      color: var(--accent);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .skill-tag:hover {
+      background: rgba(79, 195, 247, 0.25);
+      transform: scale(1.12) rotate(6deg);
+      box-shadow: 0 0 15px rgba(79, 195, 247, 0.3);
+    }
+
+    .experience-item {
+      background: rgba(21, 30, 46, 0.7);
+      padding: 1.6rem;
+      border-radius: 14px;
+      margin: 1.2rem 0;
+      border-left: 4px solid var(--success);
+      backdrop-filter: blur(8px);
+      transition: all 0.5s ease;
+    }
+
+    .experience-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    .experience-header {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .experience-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .experience-date {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    .experience-company {
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .nav-buttons {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 100;
+    }
+
+    .nav-button {
+      width: 60px;
+      height: 60px;
+      background: rgba(21, 30, 46, 0.8);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 2px solid rgba(79, 195, 247, 0.4);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(6px);
+    }
+
+    .nav-button:hover {
+      background: var(--accent);
+      color: var(--bg-dark);
+      transform: scale(1.25) rotate(30deg);
+      box-shadow: 0 0 25px rgba(79, 195, 247, 0.6);
+    }
+
+    .nav-indicator {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+    }
+
+    .indicator-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(138, 180, 248, 0.4);
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .indicator-dot.active {
+      background: var(--accent);
+      transform: scale(1.8);
+    }
+
+    /* Animations */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes growLine {
+      from { width: 0; }
+      to { width: 90px; }
+    }
+
+    @media (max-width: 1024px) {
+      .module-content { padding: 36px; }
+      .profile-img { width: 180px; height: 180px; }
+    }
+
+    @media (max-width: 768px) {
+      .module-content { padding: 28px; margin: 16px; }
+      .module-title { font-size: 2rem; }
+      .info-grid { grid-template-columns: 1fr; }
+      .nav-buttons {
+        right: 20px;
+        bottom: 120px;
+        top: auto;
+        flex-direction: row;
+        transform: none;
+      }
+      .nav-indicator { bottom: 80px; }
+    }
+
+    @media (max-width: 480px) {
+      .module-content { padding: 20px; }
+      .module-title { font-size: 1.6rem; }
+      .profile-img { width: 150px; height: 150px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated code background -->
+  <canvas id="code-bg"></canvas>
+
+  <!-- Module 1: Presentación -->
+  <section class="module" id="module1">
+    <div class="module-content">
+      <img src="/img/vitae.jpg" alt="Juan Andres Goya Acosta" class="profile-img" onerror="this.src='https://placehold.co/400x400?text=Juan+Andres&font=Fira+Code'">
+      <h1 class="module-title">Juan Andres Goya Acosta</h1>
+      <p class="text-secondary mb-6">Ingeniero de Software con IA • Perú</p>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <h3><i class="fas fa-envelope"></i> Email</h3>
+          <p>goyajuanandres11@gmail.com</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-phone"></i> Teléfono</h3>
+          <p>906789003</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-map-marker-alt"></i> Ubicación</h3>
+          <p>Jr. Rosa Fung Pineda 12006<br>Junín, Perú</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-birthday-cake"></i> Nacimiento</h3>
+          <p>5 de enero de 2007</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 2: Perfil Profesional -->
+  <section class="module" id="module2">
+    <div class="module-content">
+      <h1 class="module-title">Perfil Profesional</h1>
+      <div class="info-card">
+        <p>Profesional comprometido y orientado a resultados, con una sólida capacidad para adaptarse a diferentes entornos laborales y aprender rápidamente nuevas habilidades. Destacado por su eficiencia en la resolución de problemas y trabajo en equipo.</p>
+      </div>
+      
+      <div class="skills-container mt-4">
+        <span class="skill-tag"><i class="fab fa-js"></i> JavaScript</span>
+        <span class="skill-tag"><i class="fab fa-php"></i> PHP</span>
+        <span class="skill-tag"><i class="fas fa-database"></i> SQL</span>
+        <span class="skill-tag"><i class="fas fa-laptop-code"></i> Front-end</span>
+        <span class="skill-tag"><i class="fas fa-language"></i> Español</span>
+      </div>
+
+      <div class="info-card mt-4">
+        <h3><i class="fas fa-heart"></i> Pasatiempos</h3>
+        <p>Programación, desarrollo de software y resolución de problemas tecnológicos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 3: Formación Académica -->
+  <section class="module" id="module3">
+    <div class="module-content">
+      <h1 class="module-title">Formación Académica</h1>
+      <div class="experience-item">
+        <div class="experience-header">
+          <div class="experience-title">Ingeniería de Software con IA</div>
+          <div class="experience-date">Feb 2024 – Nov 2026</div>
+        </div>
+        <div class="experience-company">SENATI, El Tambo Huancayo</div>
+        <p>Diseño y desarrollo de sistemas de software integrando técnicas de inteligencia artificial para mejorar la eficiencia y la toma de decisiones.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 4: Experiencia Profesional -->
+  <section class="module" id="module4">
+    <div class="module-content">
+      <h1 class="module-title">Experiencia Profesional</h1>
+      
+      <div class="experience-item">
+        <div class="experience-header">
+          <div class="experience-title">Practicante en Desarrollo de Software y Atención Técnica</div>
+          <div class="experience-date">Jun 2025 – Nov 2025</div>
+        </div>
+        <div class="experience-company">Tiendas TEC, Huancayo</div>
+        <ul class="list-disc pl-5 mt-2 space-y-1 text-secondary">
+          <li>Atención técnica a usuarios para resolver incidencias de software y hardware.</li>
+        </ul>
+      </div>
+      
+      <div class="experience-item">
+        <div class="experience-header">
+          <div class="experience-title">Practicante en Administración de Software</div>
+          <div class="experience-date">May 2024 – Jun 2025</div>
+        </div>
+        <div class="experience-company">Municipalidad de Chupaca</div>
+        <ul class="list-disc pl-5 mt-2 space-y-1 text-secondary">
+          <li>Gestión y mantenimiento de bases de datos esenciales.</li>
+          <li>Monitoreo y análisis del rendimiento del software.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 5: Competencias Técnicas -->
+  <section class="module" id="module5">
+    <div class="module-content">
+      <h1 class="module-title">Competencias Técnicas</h1>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <h3><i class="fas fa-code"></i> Desarrollo de Software</h3>
+          <p>Diseño, implementación y mantenimiento de aplicaciones con buenas prácticas.</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fab fa-js"></i> JavaScript</h3>
+          <p>Interfaces interactivas y dinámicas con enfoque en UX.</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fab fa-php"></i> PHP</h3>
+          <p>Desarrollo back-end robusto y seguro para aplicaciones web.</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-database"></i> Bases de Datos SQL</h3>
+          <p>Diseño e implementación de bases de datos relacionales eficientes.</p>
+        </div>
+      </div>
+      
+      <div class="info-card mt-4">
+        <h3><i class="fas fa-laptop-code"></i> Front-end</h3>
+        <p>Interfaces responsivas y funcionales con énfasis en experiencia de usuario.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 6: Contacto -->
+  <section class="module" id="module6">
+    <div class="module-content">
+      <h1 class="module-title">¡Informacion de Contacto!</h1>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <h3><i class="fas fa-envelope"></i> Email</h3>
+          <p>goyajuanandres11@gmail.com</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-phone"></i> Teléfono</h3>
+          <p>906789003</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-map-marker-alt"></i> Ubicación</h3>
+          <p>Jr. Rosa Fung Pineda 12006<br>Junín, Perú</p>
+        </div>
+        <div class="info-card">
+          <h3><i class="fas fa-graduation-cap"></i> Estado</h3>
+          <p>Estudiando Ingeniería de Software con IA en SENATI</p>
+        </div>
+      </div>
+      
+      <div class="mt-6 text-center text-secondary">
+        <p>Gracias por tu tiempo. ¡Listo para contribuir con código limpio y soluciones eficientes!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation -->
+  <div class="nav-buttons">
+    <div class="nav-button" id="prevBtn"><i class="fas fa-chevron-up"></i></div>
+    <div class="nav-button" id="nextBtn"><i class="fas fa-chevron-down"></i></div>
+  </div>
+
+  <div class="nav-indicator">
+    <div class="indicator-dot active" data-module="1"></div>
+    <div class="indicator-dot" data-module="2"></div>
+    <div class="indicator-dot" data-module="3"></div>
+    <div class="indicator-dot" data-module="4"></div>
+    <div class="indicator-dot" data-module="5"></div>
+    <div class="indicator-dot" data-module="6"></div>
+  </div>
+
+  <script>
+    // Animated code background
+    const canvas = document.getElementById('code-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    for (let i = 0; i < columns; i++) drops[i] = Math.random() * -100;
+
+    const codes = "const let var function class if else for while return try catch => {} [] // /* */ import export async await ... === !== >= <= ++ -- += -= *= /= %=".split('');
+
+    function draw() {
+      ctx.fillStyle = 'rgba(10, 15, 29, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#4fc3f7';
+      ctx.font = `${fontSize}px 'Fira Code', monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = codes[Math.floor(Math.random() * codes.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 50);
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Module visibility
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const index = Array.from(modules).indexOf(entry.target);
+          updateIndicators(index + 1);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    const modules = document.querySelectorAll('.module');
+    modules.forEach(module => observer.observe(module));
+
+    // Navigation
+    let currentModule = 1;
+    const totalModules = modules.length;
+
+    function updateIndicators(moduleNum) {
+      document.querySelectorAll('.indicator-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === moduleNum - 1);
+      });
+      currentModule = moduleNum;
+    }
+
+    document.getElementById('prevBtn').addEventListener('click', () => {
+      if (currentModule > 1) modules[currentModule - 2].scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      if (currentModule < totalModules) modules[currentModule].scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.querySelectorAll('.indicator-dot').forEach(dot => {
+      dot.addEventListener('click', () => {
+        const target = parseInt(dot.dataset.module);
+        modules[target - 1].scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp' || e.key === 'w') document.getElementById('prevBtn').click();
+      else if (e.key === 'ArrowDown' || e.key === 's') document.getElementById('nextBtn').click();
+    });
+
+    // Initialize first
+    setTimeout(() => modules[0].classList.add('visible'), 300);
+  </script>
+</body>
+</html>
+
